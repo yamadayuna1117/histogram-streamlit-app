@@ -826,11 +826,11 @@ stats_df = pd.DataFrame(stats_rows)
 tab_labels = [
     "概要",
     "ヒストグラム",
+    "重ね比較",
     "データ一覧",
     "統計量",
-    "重ね比較",
 ]
-summary_tab, histogram_tab, data_tab, stats_tab, comparison_tab = st.tabs(
+summary_tab, histogram_tab, comparison_tab, data_tab, stats_tab = st.tabs(
     tab_labels,
     key="main_tabs",
     on_change="rerun",
