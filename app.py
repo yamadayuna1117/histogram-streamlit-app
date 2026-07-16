@@ -482,10 +482,15 @@ except Exception as exc:
     st.error(f"Excelファイルを読み込めませんでした：{exc}")
     st.stop()
 
+# Excelをアップロードした直後は、シートを自動選択しない。
+# ファイル内容のハッシュをキーに含めることで、別のExcelへ差し替えた際に
+# 以前のシート選択が残らないようにする。
 selected_sheets = st.sidebar.multiselect(
     "分析するシート",
     options=sheet_names,
-    default=sheet_names[:1],
+    default=[],
+    key=f"selected_sheets_{file_signature}",
+    placeholder="シートを選択してください",
 )
 
 if not selected_sheets:
@@ -531,12 +536,20 @@ with st.sidebar.form("analysis_settings_form"):
             if pd.to_numeric(frame[column], errors="coerce").notna().any()
         ]
         previous = existing_config.get("selected_columns", {}).get(sheet_name)
-        default_columns = previous if previous is not None else numeric_candidates[:4]
+        # 初回は列を自動選択しない。設定適用後の再表示時のみ、
+        # そのファイル・シートで以前選んだ列を初期値として使う。
+        default_columns = previous if previous is not None else []
 
         selected_columns[sheet_name] = st.multiselect(
             f"列を選択：{sheet_name}",
             options=list(frame.columns),
             default=[column for column in default_columns if column in frame.columns],
+            key=f"selected_columns_{file_signature}_{stable_key(sheet_name)}",
+            placeholder="分析する列を選択してください",
+            help=(
+                "数値を含む列を選択してください。"
+                f" 数値候補：{len(numeric_candidates)}列"
+            ),
         )
 
     st.markdown("##### 表示")
@@ -620,7 +633,7 @@ if submitted:
     existing_config = st.session_state["analysis_config"]
 
 if not existing_config:
-    st.info("サイドバーで列を確認し、「設定を適用」を押してください。")
+    st.info("サイドバーで分析する列を選び、「設定を適用」を押してください。")
     st.stop()
 
 config = existing_config
