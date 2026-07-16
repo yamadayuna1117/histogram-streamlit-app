@@ -619,7 +619,7 @@ with st.sidebar.form("analysis_settings_form"):
     else:
         bin_method_label = existing_config.get(
             "bin_method_label",
-            "Freedman–Diaconis（外れ値に比較的強い）",
+            DEFAULT_BIN_METHOD_LABEL,
         )
         measurement_unit = float(existing_config.get("measurement_unit", 0.1))
 
