@@ -1048,14 +1048,15 @@ if comparison_tab.open:
             comparison_y_label = st.selectbox(
                 "縦軸",
                 options=list(Y_MODES),
-                index=1 if len(selected_items) >= 2 else 0,
-                key="comparison_y_mode",
+                index=0,
+                key="comparison_y_mode_v2",
             )
         with control_cols[1]:
             comparison_style = st.selectbox(
                 "表示形式",
                 options=["輪郭線", "半透明の棒"],
-                key="comparison_style",
+                index=1,
+                key="comparison_style_v2",
             )
         with control_cols[2]:
             comparison_method_label = st.selectbox(
