@@ -42,6 +42,7 @@ BIN_METHODS = {
     "スタージェスの公式（少標本向け）": "sturges",
     "Scottの公式（正規分布に近いデータ向け）": "scott",
 }
+DEFAULT_BIN_METHOD_LABEL = "平方根則（シンプル）"
 
 Y_MODES = {
     "度数": "count",
@@ -179,8 +180,7 @@ def raw_bin_width(values: np.ndarray, method: str) -> float:
         return 0.0
 
     if method == "sqrt":
-        bin_count = max(1, math.ceil(math.sqrt(n)))
-        return data_range / bin_count
+        return data_range / math.sqrt(n)
 
     if method == "sturges":
         bin_count = max(1, math.ceil(math.log2(n) + 1))
@@ -582,22 +582,20 @@ with st.sidebar.form("analysis_settings_form"):
 
     if show_advanced:
         st.markdown("##### 階級の自動設定")
+        saved_bin_method = existing_config.get(
+            "bin_method_label",
+            DEFAULT_BIN_METHOD_LABEL,
+        )
         bin_method_label = st.selectbox(
             "階級幅の決定方法",
             options=list(BIN_METHODS),
-            index=list(BIN_METHODS).index(
-                existing_config.get(
-                    "bin_method_label",
-                    "Freedman–Diaconis（外れ値に比較的強い）",
-                )
-            )
-            if existing_config.get(
-                "bin_method_label",
-                "Freedman–Diaconis（外れ値に比較的強い）",
-            )
-            in BIN_METHODS
-            else 0,
+            index=(
+                list(BIN_METHODS).index(saved_bin_method)
+                if saved_bin_method in BIN_METHODS
+                else list(BIN_METHODS).index(DEFAULT_BIN_METHOD_LABEL)
+            ),
         )
+
         measurement_unit = st.number_input(
             "既定の測定単位",
             min_value=MIN_POSITIVE_VALUE,
