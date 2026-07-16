@@ -64,9 +64,21 @@ st.markdown(
         background: white;
         border: 1px solid #e3e8ef;
         border-radius: 12px;
-        padding: 0.7rem 0.9rem;
+        padding: 0.55rem 0.65rem;
         box-shadow: 0 2px 8px rgba(20, 45, 80, 0.04);
+        min-width: 0;
       }
+      div[data-testid="stMetricLabel"] p {
+      font-size: 0.8rem !important;
+      white-space: nowrap;
+    }
+
+    /* カード内の数値 */
+    div[data-testid="stMetricValue"] > div {
+      font-size: clamp(1.25rem, 1.6vw, 1.55rem) !important;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
       div[data-testid="stDownloadButton"] button { width: 100%; }
       .small-note { color: #5d6b7a; font-size: 0.9rem; }
     </style>
